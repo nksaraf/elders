@@ -1,0 +1,22 @@
+{
+  "name": "with-typescript",
+  "version": "1.0.0",
+  "author": "Josh Larson <jplhomer@gmail.com>",
+  "license": "MIT",
+  "main": "dist/index.cjs.js",
+  "private": true,
+  "scripts": {
+    "dev": "flareact dev",
+    "build": "flareact build",
+    "deploy": "flareact publish"
+  },
+  "dependencies": {
+    "flareact": "^1.0.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.56"
+  },
+  "files": ["dist"]
+}

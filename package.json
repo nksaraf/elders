@@ -1,0 +1,35 @@
+{
+  "name": "elders",
+  "version": "0.0.1",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "examples/*"
+  ],
+  "scripts": {
+    "postinstall": "preconstruct dev"
+  },
+  "devDependencies": {
+    "@preconstruct/cli": "^2.0.5",
+    "kush-cli": "^0.0.4",
+    "xo": "^0.38.2",
+    "eslint-config-xo-react": "^0.24.0",
+    "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-react-hooks": "^4.2.0"
+  },
+  "xo": {
+    "space": true,
+    "prettier": true,
+    "extends": "xo-react",
+    "rules": {
+      "unicorn/filename-case": "warn"
+      }
+  },
+  "preconstruct": {
+    "packages": [
+      "packages/*"
+    ]
+  }
+  
+}
