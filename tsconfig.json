@@ -38,6 +38,6 @@
     "packages/repl/src/**/*",
     "packages/server/src/**/*",
     "recipes/*"
-, "examples/plain/scripts.ts", "examples/plain/twind.config.ts", "examples/plain/vite.config.ts"  ],
+, "examples/plain/scripts.ts", "examples/plain/twind.config.ts", "examples/plain/vite.config.ts", "packages/vite-plugin-react-jsx/src", "examples/basic/index.ts"  ],
   "exclude": ["*.test.ts", "*.test.tsx"]
 }

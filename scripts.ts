@@ -6,6 +6,9 @@ new-package:
     $ yarn init
   }
 
+watch:
+  $ node -r esbuild-runner/register ./build.js -watch
+
 p:
   $ yarn --cwd ./packages/${$ => $.input[0]} ${$ => $.input.slice(1).join(' ')}
 

@@ -7,29 +7,29 @@
     "packages/*",
     "examples/*"
   ],
-  "scripts": {
-    "postinstall": "preconstruct dev"
-  },
+  "scripts": {},
   "devDependencies": {
     "@preconstruct/cli": "^2.0.5",
-    "kush-cli": "^0.0.4",
-    "xo": "^0.38.2",
     "eslint-config-xo-react": "^0.24.0",
     "eslint-plugin-react": "^7.22.0",
-    "eslint-plugin-react-hooks": "^4.2.0"
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "estrella": "^1.3.0",
+    "kush-cli": "^0.0.4",
+    "siroc": "^0.7.0",
+    "xo": "^0.38.2"
   },
   "xo": {
     "space": true,
     "prettier": true,
     "extends": "xo-react",
     "rules": {
-      "unicorn/filename-case": "warn"
-      }
+      "unicorn/filename-case": "off",
+      "@typescript-eslint/no-implicit-any-catch": "off"
+    }
   },
   "preconstruct": {
     "packages": [
       "packages/*"
     ]
   }
-  
 }

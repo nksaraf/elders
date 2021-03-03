@@ -1,4 +1,4 @@
-import globToRegexp from "glob-to-regexp";
+import globToRegexp from 'glob-to-regexp';
 /**
  * Plugin options.
  */
@@ -33,11 +33,11 @@ export interface Options {
   extendRoute?: (route: Route, parent: Route | undefined) => Route | void;
 }
 
-export type ImportMode = "sync" | "async";
+export type ImportMode = 'sync' | 'async';
 export type ImportModeResolveFn = (filepath: string) => ImportMode;
 
-export type UserOptions = Partial<Omit<Options, "root">>;
-import fg from "fast-glob";
+export type UserOptions = Partial<Omit<Options, 'root'>>;
+import fg from 'fast-glob';
 
 export interface ResolverContext {
   /**
@@ -60,11 +60,11 @@ export interface ResolverContext {
 export async function resolve({
   dir,
   extensions,
-  exclude,
+  exclude
 }: ResolverContext): Promise<string[]> {
-  return await fg(`${dir}/**/*.{${extensions.join(",")}}`, {
-    ignore: ["node_modules", ".git", ...exclude],
-    onlyFiles: true,
+  return fg(`${dir}/**/*.{${extensions.join(',')}}`, {
+    ignore: ['node_modules', '.git', ...exclude],
+    onlyFiles: true
   });
 }
 
@@ -81,19 +81,19 @@ export interface BuildRoutesContext {
   dir: string;
   extensions: string[];
   root: string;
-  extendRoute?: Options["extendRoute"];
+  extendRoute?: Options['extendRoute'];
 }
 
-import path from "path";
+import path from 'path';
 
 /**
  * Generates a string containing code that exports
  * a `routes` array that is compatible with Vue Router.
  */
 export async function generateRoutesCode(options: Options) {
-  const { root, pagesDir, exclude, extensions, extendRoute } = options;
+  const {root, pagesDir, exclude, extensions, extendRoute} = options;
   const dir = normalizePath(path.join(root, pagesDir));
-  const files = await resolve({ dir, extensions, exclude });
+  const files = await resolve({dir, extensions, exclude});
 
   const normalizedRoot = normalizePath(root);
   const routes = buildRoutes({
@@ -101,7 +101,7 @@ export async function generateRoutesCode(options: Options) {
     dir,
     extensions,
     root: normalizedRoot,
-    extendRoute,
+    extendRoute
   });
 
   return stringifyRoutes(routes, options);
@@ -110,8 +110,8 @@ export async function generateRoutesCode(options: Options) {
 /**
  * Normalizes a path to use forward slashes.
  */
-function normalizePath(str: string): string {
-  return str.replace(/\\/g, "/");
+function normalizePath(string: string): string {
+  return string.replace(/\\/g, '/');
 }
 
 export function buildRoutes({
@@ -119,23 +119,23 @@ export function buildRoutes({
   dir,
   extensions,
   root,
-  extendRoute,
+  extendRoute
 }: BuildRoutesContext) {
   const routes: Route[] = [];
 
   for (const file of files) {
-    const re = String(globToRegexp(dir, { extended: true })).slice(1, -2);
+    const re = String(globToRegexp(dir, {extended: true})).slice(1, -2);
     const pathParts = file
-      .replace(new RegExp(re), "")
-      .replace(new RegExp(`\\.(${extensions.join("|")})$`), "")
-      .split("/")
-      .slice(1); // removing the pagesDir means that the path begins with a '/'
+      .replace(new RegExp(re), '')
+      .replace(new RegExp(`\\.(${extensions.join('|')})$`), '')
+      .split('/')
+      .slice(1); // Removing the pagesDir means that the path begins with a '/'
 
-    const component = file.replace(root, "");
+    const component = file.replace(root, '');
     const route: Route = {
-      name: "",
-      path: "",
-      component: component.startsWith("/") ? component : `/${component}`,
+      name: '',
+      path: '',
+      component: component.startsWith('/') ? component : `/${component}`
     };
 
     let parent = routes;
@@ -145,7 +145,7 @@ export function buildRoutes({
       // Remove square brackets at the start and end.
       const isDynamicPart = isDynamicRoute(part);
       const normalizedPart = (isDynamicPart
-        ? part.replace(/^\[(\.{3})?/, "").replace(/\]$/, "")
+        ? part.replace(/^\[(\.{3})?/, '').replace(/]$/, '')
         : part
       ).toLowerCase();
 
@@ -155,20 +155,20 @@ export function buildRoutes({
         (parentRoute) => parentRoute.name === route.name
       );
       if (child) {
-        child.children = child.children || [];
+        child.children = child.children ?? [];
         parent = child.children;
-        route.path = "";
-      } else if (normalizedPart === "index" && !route.path) {
-        route.path += "/";
-      } else if (normalizedPart !== "index") {
+        route.path = '';
+      } else if (normalizedPart === 'index' && !route.path) {
+        route.path += '/';
+      } else if (normalizedPart !== 'index') {
         if (isDynamicPart) {
           // Catch-all route
           if (/^\[\.{3}/.test(part)) {
             route.path += `/*`;
 
-            // route.path += '(.*)';
+            // Route.path += '(.*)';
           } else if (i === pathParts.length - 1) {
-            // route.path += '?';
+            // Route.path += '?';
             route.path += `/:${normalizedPart}`;
           }
         } else {
@@ -183,7 +183,7 @@ export function buildRoutes({
   return prepareRoutes(routes, extendRoute);
 }
 
-const isDynamicRoute = (s: string) => /^\[.+\]$/.test(s);
+const isDynamicRoute = (s: string) => /^\[.+]$/.test(s);
 
 /**
  * Performs a final cleanup on the routes array.
@@ -191,16 +191,16 @@ const isDynamicRoute = (s: string) => /^\[.+\]$/.test(s);
  */
 function prepareRoutes(
   routes: Route[],
-  extendRoute: Options["extendRoute"],
+  extendRoute: Options['extendRoute'],
   parent?: Route
 ) {
   for (const route of routes) {
     if (route.name) {
-      route.name = route.name.replace(/-index$/, "");
+      route.name = route.name.replace(/-index$/, '');
     }
 
     if (parent) {
-      route.path = route.path.replace(/^\//, "").replace(/\?$/, "");
+      route.path = route.path.replace(/^\//, '').replace(/\?$/, '');
     }
 
     if (route.children) {
@@ -208,10 +208,11 @@ function prepareRoutes(
       route.children = prepareRoutes(route.children, extendRoute, route);
     }
 
-    if (typeof extendRoute === "function") {
+    if (typeof extendRoute === 'function') {
       Object.assign(route, extendRoute(route, parent) || {});
     }
   }
+
   return routes;
 }
 
@@ -219,14 +220,15 @@ function resolveImportMode(
   filepath: string,
   mode: ImportMode | ImportModeResolveFn
 ) {
-  if (typeof mode === "function") {
+  if (typeof mode === 'function') {
     return mode(filepath);
   }
+
   return mode;
 }
 
 function pathToName(filepath: string) {
-  return filepath.replace(/[\_\.\-\\\/]/g, "_").replace(/[\[:\]()]/g, "$");
+  return filepath.replace(/[_.\-\\/]/g, '_').replace(/[[:\]()]/g, '$');
 }
 
 export function stringifyRoutes(routes: Route[], options: Options) {
@@ -234,9 +236,9 @@ export function stringifyRoutes(routes: Route[], options: Options) {
 
   const routesCode = routes
     .map((route) => stringifyRoute(imports, route, options))
-    .join(",\n");
+    .join(',\n');
 
-  return `${imports.join(";\n")}
+  return `${imports.join(';\n')}
 export default [${routesCode}];`.trim();
 }
 
@@ -245,7 +247,7 @@ export default [${routesCode}];`.trim();
  */
 function stringifyRoute(
   imports: string[],
-  { name, path, component, children, meta }: Route,
+  {name, path, component, children, meta}: Route,
   options: Options
 ): string {
   const props: string[] = [];
@@ -254,11 +256,10 @@ function stringifyRoute(
     props.push(`name: '${name}'`);
   }
 
-  props.push(`path: '${path}'`);
-  props.push("props: true");
+  props.push(`path: '${path}'`, 'props: true');
 
   const mode = resolveImportMode(component, options.importMode);
-  if (mode === "sync") {
+  if (mode === 'sync') {
     const importName = pathToName(component);
     imports.push(`import ${importName} from '${component}'`);
     props.push(`component: ${importName}`);
@@ -268,9 +269,9 @@ function stringifyRoute(
 
   if (children) {
     props.push(`children: [
-      ${children.map((route: any) =>
-        stringifyRoute(imports, route, options)
-      )},\n
+      ${children
+        .map((route: any) => stringifyRoute(imports, route, options))
+        .join(' ')},\n
     ]`);
   }
 
@@ -278,63 +279,65 @@ function stringifyRoute(
     props.push(`meta: ${JSON.stringify(meta)}`);
   }
 
-  return `{${props.join(",\n")}}`.trim();
+  return `{${props.join(',\n')}}`.trim();
 }
 
-import type { Plugin } from "vite";
-import { resolveFile } from "../utils";
+import type {Plugin} from 'vite';
+import {resolveFile} from '../utils';
 
 function createPlugin(userOptions: UserOptions = {}): Plugin {
   const options: Options = {
     root: process.cwd(),
-    pagesDir: "pages",
+    pagesDir: 'pages',
     exclude: [],
-    extensions: ["jsx", "js", "ts", "tsx", "md", "mdx"],
-    importMode: "async",
+    extensions: ['jsx', 'js', 'ts', 'tsx', 'md', 'mdx'],
+    importMode: 'async',
     extendRoute: (route) => route,
-    ...userOptions,
+    ...userOptions
   };
 
   return {
-    name: "vite-react-next",
-    enforce: "pre",
+    name: 'vite-react-next',
+    enforce: 'pre',
     config: () => ({
       define: {},
       resolve: {
         alias: {
-          "/@pages-infra": "./src",
-        },
-      },
+          '/@pages-infra': './src'
+        }
+      }
     }),
     configResolved(config) {
       options.root = config.root;
     },
-    resolveId(importee, importer) {
-      if (importee.includes("@!elders")) {
+    resolveId(importee) {
+      if (importee.includes('@!elders')) {
         return importee;
       }
     },
     async load(id) {
       try {
-        if (id.includes("@!elders/pages")) {
-          console.log("resolving id");
-          return generateRoutesCode(options);
-        } else if (id.includes("@!elders/app")) {
+        if (id.includes('@!elders/pages')) {
+          console.log('resolving id');
+          return await generateRoutesCode(options);
+        }
+
+        if (id.includes('@!elders/app')) {
           try {
             return `export { default } from "${await resolveFile(
               normalizePath(path.join(options.root, options.pagesDir)),
-              "_theme",
-              [".js", ".ts", ".tsx", ".jsx", ".md"]
+              '_theme',
+              ['.js', '.ts', '.tsx', '.jsx', '.md']
             )}";`;
-          } catch (e) {
-            console.log(e);
+          } catch (error) {
+            console.log(error);
           }
         }
-      } catch (e) {
-        console.error(e);
-        throw e;
+      } catch (error) {
+        console.error(error);
+        throw error;
       }
-    },
+    }
   };
 }
 
