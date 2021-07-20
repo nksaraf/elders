@@ -24,7 +24,11 @@
     "extends": "xo-react",
     "rules": {
       "unicorn/filename-case": "off",
-      "@typescript-eslint/no-implicit-any-catch": "off"
+      "@typescript-eslint/no-implicit-any-catch": "off",
+      "@typescript-eslint/restrict-template-expressions": "off",
+      "no-await-in-loop": "off",
+      "@typescript-eslint/ban-types": "off",
+      "react/function-component-definition": "off"
     }
   },
   "preconstruct": {

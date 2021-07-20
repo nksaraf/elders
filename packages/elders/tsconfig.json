@@ -17,6 +17,6 @@
     "noEmit": true,
     "jsx": "react"
   },
-  "include": ["**/*.ts", "**/*.tsx", "../../examples/plain/scripts.ts", "../../examples/plain/twind.config.ts", "../../examples/plain/vite.config.ts"],
+  "include": ["**/*.ts", "**/*.tsx", "../../examples/plain/scripts.ts", "../../examples/plain/twind.config.ts", "../../examples/plain/vite.config.ts", "../../examples/basic/src/declare.d.ts"],
   "exclude": ["node_modules"]
 }

@@ -283,7 +283,7 @@ function stringifyRoute(
 }
 
 import type {Plugin} from 'vite';
-import {resolveFile} from '../utils';
+import {resolveFile} from './utils';
 
 function createPlugin(userOptions: UserOptions = {}): Plugin {
   const options: Options = {
@@ -309,26 +309,31 @@ function createPlugin(userOptions: UserOptions = {}): Plugin {
     }),
     configResolved(config) {
       options.root = config.root;
+      console.log(options.root);
     },
     resolveId(importee) {
-      if (importee.includes('@!elders')) {
+      if (importee.includes('@elders')) {
         return importee;
       }
     },
     async load(id) {
       try {
-        if (id.includes('@!elders/pages')) {
-          console.log('resolving id');
-          return await generateRoutesCode(options);
+        if (id.includes('@elders/pages')) {
+          const code = await generateRoutesCode(options);
+          console.log('resolving pages', code);
+
+          return code;
         }
 
-        if (id.includes('@!elders/app')) {
+        if (id.includes('@elders/app')) {
           try {
-            return `export { default } from "${await resolveFile(
-              normalizePath(path.join(options.root, options.pagesDir)),
-              '_theme',
-              ['.js', '.ts', '.tsx', '.jsx', '.md']
-            )}";`;
+            return `export { default } from "${
+              (await resolveFile(
+                normalizePath(path.join(options.root, options.pagesDir)),
+                '_theme',
+                ['.js', '.ts', '.tsx', '.jsx', '.md']
+              )) as any
+            }";`;
           } catch (error) {
             console.log(error);
           }

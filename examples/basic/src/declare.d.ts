@@ -1,5 +1,5 @@
-declare module "@!virtual-modules/*";
-declare module "@!virtual-modules/pages" {
+declare module '@elders/*';
+declare module '@elders/pages' {
   export interface Page {
     name: string;
     path: string;
@@ -10,6 +10,7 @@ declare module "@!virtual-modules/pages" {
   export const pages: Page[];
   export default pages;
 }
+
 interface Window {
   __NEXT_DATA__: {
     routePath: string;
@@ -17,7 +18,7 @@ interface Window {
   };
 }
 
-// import React from 'react'
+// Import React from 'react'
 
 // /** The type of a theme. */
 // export type ITheme = React.ComponentType<IThemeProps>

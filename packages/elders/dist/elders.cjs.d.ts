@@ -8,4 +8,4 @@
 // and since export * doesn't include default exports, we need to read your source file
 // to check for a default export and re-export it if it exists
 // it's not ideal, but it works pretty well ¯\_(ツ)_/¯
-export * from "../src/index";
+export * from "../index";

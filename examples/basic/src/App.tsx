@@ -22,10 +22,8 @@ interface ReactElement {
   uuid: number;
   source: {
     filename: string;
-    line: {
-      start: number;
-      end: number;
-    };
+    startLine: number;
+    endLine: number;
   };
 }
 
@@ -48,8 +46,45 @@ const machine = createState({
     }
   },
   states: {
-    selected: {},
-    notSelected: {}
+    selected: {
+      on: {
+        SELECT_ELEMENT: [
+          (data, payload) => {
+            const dataset = payload.element.dataset;
+            data.selected = {
+              element: payload.element,
+              uuid: dataset.uuid,
+              source: {
+                filename: dataset.sourceFilename,
+                startLine: dataset.sourceLineStart,
+                endLine: dataset.sourceLineEnd
+              }
+            };
+          },
+          {to: 'selected'}
+        ]
+      }
+    },
+    notSelected: {
+      on: {
+        SELECT_ELEMENT: ['setSelectedElement', {to: 'selected'}]
+      }
+    }
+  },
+  actions: {
+    setSelectedElement: (data, payload) => {
+      const dataset = payload.element.dataset;
+      data.selected = {
+        element: payload.element,
+        uuid: dataset.uuid,
+        source: {
+          filename: dataset.sourceFilename,
+          startLine: dataset.sourceLineStart,
+          endLine: dataset.sourceLineEnd
+        }
+      };
+      data.selected = payload.element;
+    }
   }
 });
 
@@ -76,7 +111,7 @@ function useElementSelector({
 
       const element = event.target as HTMLElement;
 
-      onPointerIn?.(element);
+      onPointerIn(element);
     },
     containerRef.current
   );
@@ -91,7 +126,7 @@ function useElementSelector({
       }
 
       const element = event.target as HTMLElement;
-      onPointerOut?.(element);
+      onPointerOut(element);
     },
     containerRef.current
   );
@@ -114,7 +149,7 @@ function useElementSelector({
       const uuid = element.dataset.uuid ?? ++UUID_COUNT;
       element.dataset.uuid = uuid as string;
       setState({element: event.target, uuid});
-      onSelect({element: event.target, uuid});
+      onSelect(event.target as HTMLElement);
     },
     containerRef.current,
     true
@@ -172,10 +207,10 @@ const DevtoolsProvider = ({children}: React.PropsWithChildren<any>) => {
   const ref = React.useRef();
 
   return (
-    <div ref={ref as any}>
-      {children}
-      <Devtools containerRef={ref} />
-    </div>
+    <>
+      <div ref={ref as any}>{children}</div>
+      {/* <Devtools containerRef={ref} /> */}
+    </>
   );
 };
 
@@ -187,7 +222,7 @@ const App = () => {
       <div className="App bg-gradient-to-b from-green-500 to-blue-900">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <p className="text-blue-100">Hello Vite +ads React!</p>
+          <p className="text-blue-100">Hello Vite +ads Re!</p>
           <p>
             <button
               type="button"
@@ -199,7 +234,7 @@ const App = () => {
             </button>
           </p>
           <p>
-            Edit <code>App.tsx</code> and save to test HMR updates.
+            Edit <code>App.tsx</code> and saveest HMates.
           </p>
           <p>
             <a
@@ -226,4 +261,7 @@ const App = () => {
   );
 };
 
+import routes from '@elders/pages';
+// Import app from '@elders/app';
+console.log(routes);
 export default App;
